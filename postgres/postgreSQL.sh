@@ -3,6 +3,9 @@ set -e
 echo "Installing PostgreSQL"
 PKGS=$(dirname $(readlink -f "$0") )
 
+datadir='/opt/psqlDATA'
+pgpass='pg+est'
+
 psqlURL95="http://oscg-downloads.s3.amazonaws.com/packages/postgresql-9.5.6-1-x64-bigsql.rpm"
 psqlURL96="http://oscg-downloads.s3.amazonaws.com/packages/postgresql-9.6.9-1-x64-bigsql.rpm"
 psqlURL10="http://oscg-downloads.s3.amazonaws.com/packages/postgresql-10.4-1-x64-bigsql.rpm"
@@ -20,10 +23,6 @@ psqlURL=${!urlVar}
 #    1) echo 'you gave 1' ;;
 #    *) echo 'you gave something else' ;;
 #esac
-
-
-datadir='/opt/psqlDATA'
-pgpass='pg+est'
 
 wget -c $psqlURL
 yum -y localinstall $PKGS/$(echo $psqlURL | awk -F'/' '{print $NF}')

@@ -1,11 +1,13 @@
 #!/bin/bash
 set -e
+
 echo "Installing PostgreSQL"
 PKGS=$(dirname $(readlink -f "$0") )
 
 sh -x $PKGS/postgreSQL.sh 10
 
 source /opt/postgresql/pg10/pg10.env
+source $PKGS/pgCluster.env
 
 # Genetating pg_ssl Keys
 echo "Configuring SSL Connection..."
@@ -31,8 +33,7 @@ sed -i '/ssl = off/s/^#ssl = off/ssl = on/
 
 # Setting Up Archiving
 echo "Configuring Archiving..."
-# Recomended NAS must be mounted at /mnt/pg_archive
-NAS_path="/mnt/pgNAS"
+# Recomended NAS must be mounted at /mnt/server/pg_archive
 mkdir -p $NAS_path/pg_archive
 chown -R postgres.postgres $NAS_path/pg_archive
 
@@ -62,8 +63,8 @@ psql -c "CREATE ROLE replrole WITH REPLICATION LOGIN PASSWORD 'repl@123';"
 psql -c "SELECT * FROM pg_create_physical_replication_slot('replslot');"
 
 echo "# Replication
-hostssl     replication     replrole       psql01     scram-sha-256
-hostssl     replication     replrole       psql02     scram-sha-256
+hostssl     replication     replrole       $psql01     scram-sha-256
+hostssl     replication     replrole       $psql02     scram-sha-256
 " >> $PGDATA/pg_hba.conf
 
 systemctl restart postgresql10
