@@ -8,7 +8,7 @@ sh -x $PKGS/postgreSQL.sh 10
 source /opt/postgresql/pg10/pg10.env
 
 systemctl stop postgresql10
-su - postgres
+
 
 rm -rf $PGDATA/*
 PGPASSWORD=repl@123 pg_basebackup -h psql01 -D $PGDATA -P -U replrole --wal-method=stream
@@ -21,7 +21,4 @@ restore_command = 'cp /mnt/pg_archive/%f "%p"'
 EOF
 
 chown -R postgres.postgres $PGDATA
-chive/%f "%p"'
-EOF
-
-chown -R postgres.postgres $PGDATA
+systemctl start postgresql10

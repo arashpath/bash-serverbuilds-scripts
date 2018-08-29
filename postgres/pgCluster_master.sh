@@ -65,3 +65,5 @@ echo "# Replication
 hostssl     replication     replrole       psql01     scram-sha-256
 hostssl     replication     replrole       psql02     scram-sha-256
 " >> $PGDATA/pg_hba.conf
+
+systemctl restart postgresql10
