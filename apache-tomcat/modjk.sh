@@ -12,7 +12,7 @@ mkdir -p $DEVENV
 
 # ModJK Connector -----------------------------------------------------------#
 echo -e "\nInstalling ModJK Connector\n"
-##wget $jkURL
+wget -c $jkURL
 tar -zxf $PKGS/tomcat-connectors-*-src.tar.gz -C $DEVENV
 cd $DEVENV/tomcat-connectors-*-src/native
 ./configure -q --with-apxs=/opt/apache/bin/apxs && make -s && make -s install
