@@ -23,6 +23,7 @@ psqlURL=${!urlVar}
 #    1) echo 'you gave 1' ;;
 #    *) echo 'you gave something else' ;;
 #esac
+test -f $PKGS/pgCluster.env && source $PKGS/pgCluster.env 
 
 wget -c $psqlURL
 yum -y localinstall $PKGS/$(echo $psqlURL | awk -F'/' '{print $NF}')

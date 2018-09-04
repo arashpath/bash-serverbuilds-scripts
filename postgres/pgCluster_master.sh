@@ -4,7 +4,7 @@ set -e
 echo "Installing PostgreSQL"
 PKGS=$(dirname $(readlink -f "$0") )
 
-sh -x $PKGS/postgreSQL.sh 10
+sh $PKGS/postgreSQL.sh 10
 
 source /opt/postgresql/pg10/pg10.env
 source $PKGS/pgCluster.env
@@ -58,13 +58,13 @@ s/wal_keep_segments = .*/wal_keep_segments = 32/
 # Creating Replication Role and Permission
 echo "Configuring Replication..."
 
-psql -c "set password_encryption = 'scram-sha-256';"
-psql -c "CREATE ROLE replrole WITH REPLICATION LOGIN PASSWORD 'repl@123';"
-psql -c "SELECT * FROM pg_create_physical_replication_slot('replslot');"
+psql -c "set password_encryption = 'scram-sha-256';
+    CREATE ROLE replrole WITH REPLICATION LOGIN PASSWORD 'repl@123';
+    SELECT * FROM pg_create_physical_replication_slot('replslot');"
 
 echo "# Replication
-hostssl     replication     replrole       $psql01     scram-sha-256
-hostssl     replication     replrole       $psql02     scram-sha-256
+hostssl	replication	replrole	$psql01/32	scram-sha-256
+hostssl replication	replrole	$psql02/32	scram-sha-256
 " >> $PGDATA/pg_hba.conf
 
 systemctl restart postgresql10

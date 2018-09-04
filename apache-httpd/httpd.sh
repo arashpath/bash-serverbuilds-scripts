@@ -14,7 +14,7 @@ mkdir -p $DEVENV
 # Installng Apache 2.4 ------------------------------------------------------#
 yum -y install wget make gcc openssl-devel pcre-devel perl
 echo -e "\nInstalling Apache\n"
-wget -c $httpdURL
+wget -P $PKGS -c $httpdURL
 tar -xzf $PKGS/httpd-2.4.*.tar.gz -C $DEVENV
 mv $DEVENV/httpd-2.4*/ $DEVENV/httpd
 

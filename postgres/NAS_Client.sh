@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source pgCluster.conf
+source pgCluster.env
 
 yum -y install nfs-utils libnfsidmap
 systemctl enable rpcbind
