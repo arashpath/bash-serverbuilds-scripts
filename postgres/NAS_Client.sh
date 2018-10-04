@@ -1,6 +1,7 @@
 #!/bin/bash
-
-source pgCluster.env
+set -e
+PKGS=$(dirname $(readlink -f "$0") )
+source $PKGS/pgCluster.env
 
 yum -y install nfs-utils libnfsidmap
 systemctl enable rpcbind
@@ -10,6 +11,6 @@ showmount -e $NASsvr
 #Mounting NAS OnClient
 mkdir -p /mnt/pgNAS
 echo "
-$NASsvr:/opt/psqlArchive /mnt/pgNAS nfs rw,sync,hard,intr 0 0" >> /etc/fstab
+$NASsvr:/opt/psqlArchive $NAS_path nfs rw,sync,hard,intr 0 0" >> /etc/fstab
 
 mount -a

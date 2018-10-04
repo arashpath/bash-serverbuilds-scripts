@@ -24,8 +24,8 @@ psqlURL=${!urlVar}
 #    *) echo 'you gave something else' ;;
 #esac
 test -f $PKGS/pgCluster.env && source $PKGS/pgCluster.env 
-
-wget -c $psqlURL
+yum -y install wget
+wget --directory-prefix=$PKGS -c $psqlURL
 yum -y localinstall $PKGS/$(echo $psqlURL | awk -F'/' '{print $NF}')
 echo $pgpass > /tmp/passwdfile
 /opt/postgresql/pgc init pg$pgVer --datadir=$datadir --pwfile="/tmp/passwdfile"

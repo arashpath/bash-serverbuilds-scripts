@@ -19,10 +19,10 @@ tar -xzf $PKGS/httpd-2.4.*.tar.gz -C $DEVENV
 mv $DEVENV/httpd-2.4*/ $DEVENV/httpd
 
 #APR & APR UTI
-wget -c $aprURL
+wget -P $PKGS -c $aprURL
 tar -xzf $PKGS/apr-1*.tar.gz -C $DEVENV
 mv $DEVENV/apr-* $DEVENV/httpd/srclib/apr
-wget -c $utilURL
+wget -P $PKGS -c $utilURL
 tar -xzf $PKGS/apr-util-*.tar.gz -C $DEVENV
 mv $DEVENV/apr-util* $DEVENV/httpd/srclib/apr-util
 cd $DEVENV/httpd
