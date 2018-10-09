@@ -16,15 +16,15 @@ openssl genrsa 4096 > $keyDIR/domain.key
 # For Single Domain Only
 #openssl req -new -sha256 \
 #	-key 	$keyDIR/domain.key \
-#	-subj 	"/CN=snfportal.in" > $keyDIR/domain.csr 
+#	-subj 	"/CN=test.in" > $keyDIR/domain.csr 
 # For multiple domains (for both my.com & www.my.com)
 openssl req -new -sha256 \
 	-key 	$keyDIR/domain.key \
 	-subj 	"/" -reqexts SAN -config <(
 		cat /etc/pki/tls/openssl.cnf <(
 			printf "[SAN]\nsubjectAltName=\
-			DNS:fssai.tk,\
-			DNS:*.fssai.tk"
+			DNS:test.tk,\
+			DNS:*.test.tk"
 		)
 	) > $keyDIR/domain.csr
 

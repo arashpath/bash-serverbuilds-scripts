@@ -2,3 +2,4 @@
 *.tgz
 *.rpm
 *.whl
+.vscode/
