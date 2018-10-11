@@ -4,26 +4,35 @@ set -e
 PKGS=$(dirname $(readlink -f "$0") )
 DEVENV=/opt/DevEnv
 mkdir -p $DEVENV
-# ---------------------------------------------------------------------------# 
-tomcatURL="http://archive.apache.org/dist/tomcat/tomcat-8/v8.5.9/bin/apache-tomcat-8.5.9.tar.gz"
-    jkURL="http://archive.apache.org/dist/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz"
-
+# URL  ----------------------------------------------------------------------# 
+tomcatURL="https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.34/bin/apache-tomcat-8.5.34.tar.gz"
+javaURL="http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jdk-8u181-linux-x64.tar.gz"
+# Common Fnc ----------------------------------------------------------------# 
+function pkg_n() {
+  #Get Package name from URL
+  echo $1 | awk -F/ '{print $NF}'
+}
+function pkg_f() {
+  #Get Folder Name Tar Package
+  tar -tf $1 | awk -F/ 'NR==1{print $1}'
+}
 # Installing Java -----------------------------------------------------------#
 echo -e "\nInstalling Java\n"
-##wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" $javaURL 
-tar -xzf $PKGS/jdk-8*-linux-x64.tar.gz -C $DEVENV
-mv $DEVENV/jdk1.8.*/ $DEVENV/jdk8
+wget -P $PKGS -c --no-check-certificate --no-cookies \
+  --header "Cookie: oraclelicense=accept-securebackup-cookie" $javaURL 
+tar -xzf $PKGS/$(pkg_n $javaURL) -C $DEVENV
+mv $DEVENV/$(pkg_f $(pkg_n $javaURL))/ $DEVENV/jdk
 
-JAVA=$DEVENV/jdk8
+JAVA=$DEVENV/jdk
 echo -e "\nJava Installation Completed\n"
 $JAVA/bin/java -version
 
 # Installing Tomcat ---------------------------------------------------------#
 echo -e "\nInstalling Tomcat\n"
-##wget $tomcatURL
-tar -xzf $PKGS/apache-tomcat-8*.tar.gz -C $DEVENV
-mv $DEVENV/apache-tomcat-8*/ $DEVENV/tomcat8-HOME
-HOME=$DEVENV/tomcat8-HOME
+wget -P $PKGS -c $tomcatURL
+tar -xzf $PKGS/$(pkg_n $tomcatURL) -C $DEVENV
+mv $DEVENV/$(pkg_f $(pkg_n $tomcatURL))/ $DEVENV/tomcat-HOME
+HOME=$DEVENV/tomcat-HOME
 BASE=/opt/APPS/default-tom0
 
 mkdir -p $BASE/{bin,conf,logs,work,webapps,temp}
@@ -39,6 +48,18 @@ EOF
 chmod +x $BASE/bin/server.sh
 
 cp -a $HOME/webapps/examples $BASE/webapps/
+
+# Set Logrotate
+# logrotate -d -f /etc/logrotate.conf
+cat <<EOF > /etc/logrotate.d/tomcat
+/opt/APPS/*-tom?/logs/catalina.out {
+        copytruncate   
+        daily   
+        rotate 7   
+        compress   
+        missingok  
+}
+EOF
 
 # Tomcat SystemCtl Script ----------------------#
 cat <<EOF > /etc/systemd/system/tomcat0.service
